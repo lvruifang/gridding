@@ -1,0 +1,83 @@
+<template>
+    <div class="partyType"></div>
+</template>
+
+<script>
+export default {
+    name: 'partyType',
+    props: {
+        data: Object
+    },
+    data() {
+        return {}
+    },
+    methods: {
+        setChart() { 
+            let option = {
+               
+                legend: {
+                    itemWidth: this.$fontSize(12), // 标志图形的长度
+                    itemHeight: this.$fontSize(12), // 标志图形的宽度
+                    orient: 'vertical',
+                    right: '5%',
+                    top:'center',
+                    textStyle: {
+                    color: '#92d5ff',
+                    fontFamily: "Microsoft JhengHei",
+                    fontSize: this.$fontSize(14),
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{b}: {c} ({d}%)",
+                    backgroundColor: '#11367a',
+                    textStyle: {
+                        color: '#6dd0e3',
+                        fontSize: 10,
+                    },
+                },
+                series: [
+                    {
+                        name: this.data.title,
+                        type: 'pie',
+                        radius: ['40%', '60%'],
+                        center: ['35%', '55%'],
+                        avoidLabelOverlap: true,
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'outside',
+                                fontSize: 10,
+                                color: '#75deef'
+                            },
+                        },
+                        labelLine: {
+                            normal: {
+                                show: true,
+                            }
+                        },
+                       
+                        data: this.data.data
+                    }
+                ]
+            };
+            let myChart = this.$echarts(this.$el);
+            myChart.clear();
+            myChart.resize()
+            myChart.setOption(option);
+
+        }
+    },
+    mounted() {
+        this.setChart()
+    },
+}
+</script>
+
+<style  scoped>
+.partyType{
+    width: 100%;
+    height: 100%;
+
+}
+</style>
