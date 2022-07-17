@@ -1,103 +1,57 @@
 <template>
     <div class="rightContent">
         <div class="partyMember">
-            <p class="title">大南幸堡村流调队伍</p>
+            <p class="title1">{{gridName}}流调队伍</p>
              <ul class="personList">
-                <li v-for="(item,index) in personData" :key="index" @click="dialogVisible = true" class="item">
+                <li v-for="(item,index) in flowTeamMemberList" :key="index" @click="dialogVisible = true" class="item">
                     <a href="javascript:;">
                         <div class="img">
-                            <img :src="item.imgSrc" alt="">
-                            <span>队长</span>
+                            <img :src="item.picture" alt="">
+                            <span>{{item.captain}}</span>
                         </div>
                         <div class="txt">
                             <p class="name">姓名：{{item.name}}</p>
-                            <p>电话：{{item.phone}}</p>
-                            <p>职业：{{item.post}}</p>
+                            <p>电话：{{item.mobile}}</p>
+                            <p>职业：{{item.job}}</p>
                             <p>学历：{{item.education}}</p>
-                            
                         </div>
                     </a>
                 </li>
             </ul>
+            <el-pagination
+            background
+            layout="prev, pager, next"
+            v-if = "total > 8"
+            :total=total
+            :page-size=pageSize
+            @current-change = "currentChange"
+            class="pagination"
+            >
+            </el-pagination>
         </div>
-         <el-dialog
-            :visible.sync="dialogVisible"
-            width="50%"
-            :before-close="handleClose">
-            <party-member></party-member>
-            </el-dialog>
-    </div>
+    </div> 
 </template>
 
 <script>
-import partyMember from '@/components/partyBuilding/popup/partyMember.vue'
+import { mapState } from "vuex";
+import { getFlowTeamMemberList } from "@/api/antiepidemic";
 export default {
     name: 'loseTeam',
     data() {
         return {
-             dialogVisible:false,
-             personData:[
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"公务员",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                 {
-                   name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"公务员",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"医生",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                 {
-                   name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"公务员",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"医生",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                 {
-                   name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"公务员",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"医生",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-                 {
-                   name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    post:"公务员",
-                    education:"大专",
-                    phone:"18810068960"
-                },
-             ],
+            dialogVisible:false,
+            id:"",
+            flowTeamMemberList:[],
+            pageSize:8,
+            total:0,
+            gridName:""
         };
     },
-     components:{
-        partyMember
+    created(){
+        if(this.$store.state.menu.id.indexOf("_")!==-1){
+            this.id = this.$store.state.menu.id.substr(this.$store.state.menu.id.indexOf("_")+1);
+            this.getFlowTeamMemberList(1);
+        }
     },
     mounted() {
         
@@ -106,13 +60,51 @@ export default {
     methods: {
          handleClose(done) {
             done();
-        }
+        },
+         currentChange(num){
+             this.getFlowTeamMemberList(num);
+        },
+        async getFlowTeamMemberList(num){
+            try{
+                let param = {
+                    id:this.id,
+                    page_size:this.pageSize,
+                    page:num
+                }
+                const {data, count, gridName} = await getFlowTeamMemberList(param);
+                this.flowTeamMemberList = data;
+                this.total = count;
+                this.gridName = gridName;
+                console.log(data)
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "error"
+                });
+            }
+        },
+    },
+    watch: {
+        '$store.state.menu': {
+        deep: true, //深度监听
+        handler(newValue, oldValue) {
+            this.id = newValue.id
+            if(this.id.indexOf("_")!==-1){
+            this.id = this.id.substr(this.id.indexOf("_")+1);
+            }
+            if(newValue.name == "lddw"){
+            this.getFlowTeamMemberList(1);
+            }
+            
+        },
+        },
     },
 };
 </script>
 
 <style scoped>
-    .title{
+    .title1{
             width:50%;
             height:40px;
             line-height: 40px;

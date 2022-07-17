@@ -32,11 +32,11 @@ export default {
           data: this.data.data
         },
         series: [
-          {
+          { 
             name: "会议分布",
             type: "pie",
-            radius: ["30%", "90%"],
-            center: ["15%", "50%"],
+            radius: ["30%", "70%"],
+            center: ["15%", "53%"],
             roseType: "area",
             itemStyle: {
               borderRadius: 8
@@ -59,7 +59,15 @@ export default {
   },
   mounted() {
     this.setChart();
-  }
+  },
+   watch: {
+    data: {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        this.setChart();
+      },
+    },
+  },
 };
 </script>
 

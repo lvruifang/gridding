@@ -10,6 +10,8 @@
 <script>
 import siteHeader from '@/components/siteHeader'
 import treeMenu from '@/components/treeMenu'
+import { mapState, mapMutations } from "vuex";
+import { getMenuInfo} from "@/api/party";
 export default {
     name: 'App',
     data() {
@@ -19,366 +21,32 @@ export default {
                 data:[
                     {
                         label: '组织架构',
-                        id:3,
-                        children: [
-                            {
-                                label: '党建办',
-                                name:"zzjg",
-                                id:5,
-                                
-                            },
-                            {
-                                label: '党政办',
-                                 name:"zzjg",
-                                
-                            },
-                            {
-                                label: '自然资源和规划所',
-                                name:"zzjg",
-                            },
-                            {
-                                label: '应急管理办公室',
-                                name:"zzjg",
-                            },
-                            {
-                                label: '综合行政执法队',
-                                name:"zzjg",
-                            },
-                            {
-                                label: '行政综合审批服务中心',
-                                name:"zzjg",
-                            },
-                            {
-                                label: '退役军人服务站',
-                                name:"zzjg",
-                            }
-                        ]
+                        id:"level01",
+                        children: []
                     },
                     {
-                        
                         label: '党组织管理',
-                        children: [
-                            {
-                                label: '街村',
-                              
-                                children: [
-                                    {
-                                        
-                                        label: '达字营村',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '大南新堡村',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '官庄村村',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '西榆林村',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '东花园村',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '西花园村',
-                                        name:"dzzgl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '社区',
-                                children: [
-                                    {
-                                        label: '社区一',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                        name:"dzzgl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '商业街',
-                                children: [
-                                    {
-                                        label: '商业街一',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '商业街二',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '商业街三',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '商业街四',
-                                        name:"dzzgl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '企业',
-                                children: [
-                                    {
-                                        label: '企业一',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '企业二',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '企业三',
-                                        name:"dzzgl",
-                                    },
-                                    {
-                                        label: '企业四',
-                                        name:"dzzgl",
-                                    }
-                                ]
-                            },
-
-                        ]
+                        children:[],
+                        id:"level02"
                     },
                     {
                         label: '两委干部管理',
-                        children: [
-                            {
-                                label: '达字营村',
-                                name:"lwgbgl",
-                            },
-                            {
-                                label: '大南新堡村',
-                                 name:"lwgbgl",
-                            },
-                            {
-                                label: '官庄村村',
-                                 name:"lwgbgl",
-                            },
-                            {
-                                label: '西榆林村',
-                                name:"lwgbgl",
-                            },
-                            {
-                                label: '东花园村',
-                                 name:"lwgbgl",
-                            },
-                            {
-                                label: '西花园村',
-                                 name:"lwgbgl",
-                            }
-                        ]
+                        children: [],
+                        id:"level03"
                     },
                     {
                         label: '党员管理',
-                        children: [
-                            {
-                                label: '街村',
-                                children: [
-                                    {
-                                        label: '达字营村',
-                                        name:"dygl",
-                                    },
-                                    {
-                                        label: '大南新堡村',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '官庄村村',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '西榆林村',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '东花园村',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '西花园村',
-                                         name:"dygl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '社区',
-                                children: [
-                                    {
-                                        label: '社区一',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                         name:"dygl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '商业街',
-                                children: [
-                                    {
-                                        label: '商业街一',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '商业街二',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '商业街三',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '商业街四',
-                                         name:"dygl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '企业',
-                                children: [
-                                    {
-                                        label: '企业一',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '企业二',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '企业三',
-                                         name:"dygl",
-                                    },
-                                    {
-                                        label: '企业四',
-                                         name:"dygl",
-                                    }
-                                ]
-                            },
-                        ]
+                        children: [],
+                        id:"level04"
                     },
                     {
                         label: '会议管理',
-                        children: [
-                            {
-                                label: '街村',
-                                children: [
-                                    {
-                                        label: '达字营村',
-                                         name:"hygl",
-                                    },
-                                    {
-                                        label: '大南新堡村',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '官庄村村',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '西榆林村',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '东花园村',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '西花园村',
-                                        name:"hygl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '社区',
-                                children: [
-                                    {
-                                        label: '社区一',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '社区一',
-                                        name:"hygl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '商业街',
-                                children: [
-                                    {
-                                        label: '商业街一',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '商业街二',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '商业街三',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '商业街四',
-                                        name:"hygl",
-                                    }
-                                ]
-                            },
-                            {
-                                label: '企业',
-                                children: [
-                                    {
-                                        label: '企业一',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '企业二',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '企业三',
-                                        name:"hygl",
-                                    },
-                                    {
-                                        label: '企业四',
-                                        name:"hygl",
-                                    }
-                                ]
-                            },
-                        ],
-                    }
+                        children: [],
+                        id:"level05"
+                    },
                 ],
+                expandedKeys:['level01'],
+                nodeKey:"11_1"
             },
 
         };
@@ -391,16 +59,51 @@ export default {
     mounted() {
         
     },
-    methods: {
+    created() {
+        this.getMenuInfo(); //获取左侧菜单数据
         
     },
-    watch:{
-      
+    methods: {
+        ...mapMutations(["changeMenu"]),
+        async getMenuInfo() {
+            try {
+                const { data } = await getMenuInfo();
+                data.forEach((item,index)=>{
+                    item.forEach((item1,index1)=>{
+                        if(item1.name == "zzjg"){
+                            this.treeDataObj.data[0].children =item;
+                            return
+                        }else if (item1.name == "dzzgl"){
+                            this.treeDataObj.data[1].children =item;
+                            return
+                        }else if(item1.name == "lwgbgl"){
+                            this.treeDataObj.data[2].children =item;
+                            return
+                        }else if(item1.name == "dygl"){
+                            this.treeDataObj.data[3].children =item;
+                            return
+                        }else if(item1.name == "hygl"){
+                        this.treeDataObj.data[4].children =item;
+                            return
+                        }
+                    })
+                })
+                this.treeDataObj.data[0].children[0].id= 1+ this.treeDataObj.data[0].children[0].id;
+                this.changeMenu(this.treeDataObj.data[0].children[0]); 
+                this.$router.push({name:"zzjg"})
+            } catch (err) {
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "success"
+                });
+            }
+        },
+       
     },
+    
     beforeCreate: function() {
         document.getElementsByTagName("body")[0].className="partyBuildingBg";
-     
-        
     },
     beforeDestroy: function() {
      document.body.removeAttribute("class","partyBuildingBg");

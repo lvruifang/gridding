@@ -3,10 +3,10 @@
        <div class="party-head">
             <img src="@/assets/images/partyImg.jpg" alt="">
             <div class="txt">
-                <p >姓名：张一山</p>
-                <p >电话：18810068960</p>
-                <p>所属网格：大南新堡村</p>
-                <p>人员类型：常住人口</p>
+                <p >姓名：{{data.name}}</p>
+                <p >电话：{{data.mobile}}</p>
+                <p>所属网格：{{data.grid}}</p>
+                <p>人员类型：{{data.type}}</p>
             </div>
         </div>
         <el-row class="party-info">
@@ -14,12 +14,12 @@
                 <el-col :span="24"><div class="grid-content bg-purple">第一针</div></el-col>
             </el-row>
             <el-row>
-                <el-col :span="12"><div class="grid-content bg-purple">接种时间：2021-3-05</div></el-col>
-                <el-col :span="12"><div class="grid-content bg-purple-light">疫苗类型：灭活疫苗</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple">接种时间：{{data.one_inoculation_date}}</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple-light">疫苗类型：{{data.one_vaccine_type}}</div></el-col>
             </el-row>
             <el-row>
-                <el-col :span="12"><div class="grid-content bg-purple">接种机构：第一人民医院</div></el-col>
-                <el-col :span="12"><div class="grid-content bg-purple-light">生产厂家：北京科兴</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple">接种机构：{{data.one_vaccine_institution}}</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple-light">生产厂家：{{data.one_vaccine_manufacturer}}</div></el-col>
             </el-row>
         </el-row>
         <el-row class="party-info">
@@ -27,12 +27,12 @@
                 <el-col :span="24"><div class="grid-content bg-purple">第二针</div></el-col>
             </el-row>
             <el-row>
-                <el-col :span="12"><div class="grid-content bg-purple">接种时间：2021-3-05</div></el-col>
-                <el-col :span="12"><div class="grid-content bg-purple-light">疫苗类型：灭活疫苗</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple">接种时间：{{data.two_inoculation_date}}</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple-light">疫苗类型：{{data.two_vaccine_type}}</div></el-col>
             </el-row>
             <el-row>
-                <el-col :span="12"><div class="grid-content bg-purple">接种机构：第一人民医院</div></el-col>
-                <el-col :span="12"><div class="grid-content bg-purple-light">生产厂家：北京科兴</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple">接种机构：{{data.two_vaccine_institution}}</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple-light">生产厂家：{{data.two_vaccine_manufacturer}}</div></el-col>
             </el-row>
         </el-row>
         <el-row class="party-info">
@@ -40,19 +40,22 @@
                 <el-col :span="24"><div class="grid-content bg-purple">第三针</div></el-col>
             </el-row>
             <el-row>
-                <el-col :span="12"><div class="grid-content bg-purple">接种时间：2021-3-05</div></el-col>
-                <el-col :span="12"><div class="grid-content bg-purple-light">疫苗类型：灭活疫苗</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple">接种时间：{{data.three_inoculation_date}}</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple-light">疫苗类型: {{data.three_vaccine_type}}</div></el-col>
             </el-row>
             <el-row>
-                <el-col :span="12"><div class="grid-content bg-purple">接种机构：第一人民医院</div></el-col>
-                <el-col :span="12"><div class="grid-content bg-purple-light">生产厂家：北京科兴</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple">接种机构：{{data.three_vaccine_institution}}</div></el-col>
+                <el-col :span="12"><div class="grid-content bg-purple-light">生产厂家：{{data.three_vaccine_manufacturer}}</div></el-col>
             </el-row>
         </el-row>
     </div>
 </template>
-
+ 
 <script>
 export default {
+     props: {
+        data: Object
+    },
     name: 'vaccinationDetails',
 
     data() {

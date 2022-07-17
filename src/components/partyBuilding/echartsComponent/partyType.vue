@@ -71,6 +71,14 @@ export default {
     mounted() {
         this.setChart()
     },
+    watch: {
+    data: {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        this.setChart();
+      },
+    },
+  },
 }
 </script>
 

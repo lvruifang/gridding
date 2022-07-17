@@ -1,43 +1,42 @@
 <template>
     <div class="wrap">
 		<div class="party-head">
-            <img src="@/assets/images/partyImg.jpg" alt="">
+            <img :src="data.picture" alt="">
             <div class="txt">
-                <p class="title">李云雁</p>
-                <p class="mark">党建办公室主任</p>
-                <p>担任职务：村书记、村主任</p>
-                <p>是否交叉任职 ：  是</p>
+                <p class="title">{{data.name}}</p>
+                <p class="mark">{{data.intro}}</p>
+                
+                <p>担任职务：{{data.post}}</p>
+                <p>是否交叉任职 ：  {{data.cross_appointment}}</p>
             </div>
         </div>
         <el-row class="party-info">
-            <el-col :span="12"><div class="grid-content bg-purple">性别：男</div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple-light">出生日期：1987/8/10</div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple">性别：{{data.sex}}</div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple-light">出生日期：{{data.birth}}</div></el-col>
         </el-row>
         <el-row class="party-info">
-            <el-col :span="12"><div class="grid-content bg-purple">民族：汉</div></el-col>
-            <el-col :span="12"><div class="grid-content bg-purple-light">学历：大专</div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple">民族：{{data.nation}}</div></el-col>
+            <el-col :span="12"><div class="grid-content bg-purple-light">学历：{{data.education}}</div></el-col>
         </el-row>
         <div class="party-resume">
             <p class="title">人物履历</p>
-            <p>2005.12--2006.06江苏省昆山市委副书记、市长，昆山经济技术开发区管委会主任</p>
-            <p>2006.06--2011.04江苏省昆山市委书记、昆山经济技术开发区党工委书记</p>
-            <p>2011.04--2012.01江苏省南通市委副书记、代市长</p>
-            <p>2012.01--2016.01江苏省南通市委副书记、市长</p>
-            <p>2016.01--2017.02江苏省徐州市委书记</p>
-            <p>2017.02--2018.01江苏省徐州市委书记，市人大常委会主任 [2] </p>
-            <p>2018.01--2020.04云南省副省长 [1] </p>
-            <p>2020.04--2020.06云南省委常委、统战部部长，副省长 [4]</p>
+            <p v-html="data.resume"></p>
         </div>
 	</div>
 </template>
 
 <script>
+// import {organizationStructureInfo } from "@/api/party";
+// import { mapState} from "vuex";
 export default {
+    props: {
+        data: Object
+    },
     name: 'partyMember',
 
     data() {
         return {
-            
+            id:"",
         };
     },
 
@@ -46,8 +45,35 @@ export default {
     },
 
     methods: {
-        
+        // async getOrganizationStructureInfo(){
+        //     try{
+        //         const {data} = await organizationStructureInfo(this.id);
+        //         console.log(data,"111")
+        //     }catch(err){
+        //         this.$message({
+        //         message: err,
+        //         offset: 400,
+        //         type: "success"
+        //         });
+        //     }
+        // }
     },
+//     watch: {
+//     '$store.state.menu': {
+//       deep: true, //深度监听
+//       handler(newValue, oldValue) {
+//         console.log(newValue,oldValue)
+//         this.id = newValue.id
+//          if(this.id.indexOf("_")!==-1){
+//           this.id = this.id.substr(this.id.indexOf("_")+1);
+//          }
+//         if(newValue.name == "zzjg"){
+//             this.getOrganizationStructureInfo()
+//         }
+        
+//       },
+//     },
+//   },
 };
 </script>
 
@@ -81,6 +107,8 @@ export default {
      .party-head .txt .mark{
          font-size: 18px;
          margin-bottom:18px;
+         max-height:72px;
+         overflow-y: scroll;
      }
      .el-row{
          height:48px;

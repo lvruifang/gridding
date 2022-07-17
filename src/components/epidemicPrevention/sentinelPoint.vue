@@ -1,105 +1,106 @@
 <template>
     <div class="rightContent">
         <div class="partyMember">
-            <p class="title">大南幸堡村流调队伍</p>
+            <p class="title1">{{gridName}}流调队伍</p>
              <ul class="personList">
-                <li v-for="(item,index) in personData" :key="index" @click="dialogVisible = true" class="item">
+                <li v-for="(item,index) in sentinelDoctorList" :key="index" @click="dialogVisible = true" class="item">
                     <a href="javascript:;">
                         <div class="user">
-                            <img class="img" :src="item.imgSrc" alt="">
+                            <img class="img" :src="item.picture" alt="">
                             <div class="txt">
                                 <p class="name">{{item.name}}</p>
-                                <p>职业资格：{{item.vocation}}</p>
-                                <p>职业年龄：{{item.age}}</p>
+                                <p>职业资格：{{item.job}}</p>
+                                <p>职业年龄：{{item.job_age}}</p>
                             </div>
                         </div>
                         <div class="des">
-                            {{item.txt}}
+                            {{item.expert}}
                         </div>
                     </a>
                 </li>
             </ul>
+            <el-pagination
+            background
+            layout="prev, pager, next"
+            v-if = "total > 6"
+            :total=total
+            :page-size=pageSize
+            @current-change = "currentChange"
+            class="pagination"
+            >
+            </el-pagination>
         </div>
-         <el-dialog
-            :visible.sync="dialogVisible"
-            width="50%"
-            :before-close="handleClose">
-            <party-member></party-member>
-            </el-dialog>
     </div>
 </template>
-
 <script>
-import partyMember from '@/components/partyBuilding/popup/partyMember.vue'
+import { mapState } from "vuex";
+import { getSentinelDoctorList } from "@/api/antiepidemic";
 export default {
     name: 'sentinelPoint',
     data() {
         return {
              dialogVisible:false,
-             personData:[
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    vocation:"医师",
-                    age:"15年",
-                    txt:"擅长：糖尿病、甲状腺疾病，肾上腺疾病，妊娠合并甲亢，妊娠合并甲低，妊娠糖尿病，难治性高血压，骨质疏松及钙磷代谢疾病"
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    vocation:"医师",
-                    age:"15年",
-                    txt:"擅长：糖尿病、甲状腺疾病，肾上腺疾病，妊娠合并甲亢，妊娠合并甲低，妊娠糖尿病，难治性高血压，骨质疏松及钙磷代谢疾病"
-                },
-               {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    vocation:"医师",
-                    age:"15年",
-                    txt:"擅长：糖尿病、甲状腺疾病，肾上腺疾病，妊娠合并甲亢，妊娠合并甲低，妊娠糖尿病，难治性高血压，骨质疏松及钙磷代谢疾病"
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    vocation:"医师",
-                    age:"15年",
-                    txt:"擅长：糖尿病、甲状腺疾病，肾上腺疾病，妊娠合并甲亢，妊娠合并甲低，妊娠糖尿病，难治性高血压，骨质疏松及钙磷代谢疾病"
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    vocation:"医师",
-                    age:"15年",
-                    txt:"擅长：糖尿病、甲状腺疾病，肾上腺疾病，妊娠合并甲亢，妊娠合并甲低，妊娠糖尿病，难治性高血压，骨质疏松及钙磷代谢疾病"
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/person.png"),
-                    vocation:"医师",
-                    age:"15年",
-                    txt:"擅长：糖尿病、甲状腺疾病，肾上腺疾病，妊娠合并甲亢，妊娠合并甲低，妊娠糖尿病，难治性高血压，骨质疏松及钙磷代谢疾病"
-                },
-
-             ],
+             id:"",
+             sentinelDoctorList:[],
+             pageSize:6,
+             total:0,
+             gridName:""
         };
     },
-     components:{
-        partyMember
-    },
-    mounted() {
-        
-    },
-
-    methods: {
-         handleClose(done) {
-            done();
+    created() {
+         if(this.$store.state.menu.id.indexOf("_")!==-1){
+            this.id = this.$store.state.menu.id.substr(this.$store.state.menu.id.indexOf("_")+1);
+            this.getSentinelDoctorList(1);
         }
+    },
+    methods: {
+        handleClose(done) {
+            done();
+        },
+        currentChange(num){
+             this.getSentinelDoctorList(num);
+        },
+        async getSentinelDoctorList(num){
+            try{
+                let param = {
+                    id:this.id,
+                    page_size:this.pageSize,
+                    page:num
+                }
+                const {data, count, gridName} = await getSentinelDoctorList(param);
+                this.sentinelDoctorList = data;
+                this.total = count;
+                this.gridName = gridName;
+                console.log(data)
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "error"
+                });
+            }
+        },
+    },
+    watch: {
+        '$store.state.menu': {
+        deep: true, //深度监听
+        handler(newValue, oldValue) {
+            this.id = newValue.id
+            if(this.id.indexOf("_")!==-1){
+            this.id = this.id.substr(this.id.indexOf("_")+1);
+            }
+            if(newValue.name == "sd"){
+            this.getSentinelDoctorList(1);
+            }
+            
+        },
+        },
     },
 };
 </script>
 
 <style scoped>
-    .title{
+    .title1{
             width:50%;
             height:40px;
             line-height: 40px;
@@ -143,6 +144,7 @@ export default {
         width:107px;
         height:107px;
         margin-right:23px;
+        border-radius: 107px;
     }
     .item .user .txt{
         color:#fff;

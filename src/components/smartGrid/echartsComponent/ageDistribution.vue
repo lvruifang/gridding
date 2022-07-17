@@ -17,7 +17,7 @@ export default {
         title: {
           text: this.data.title,
           top: this.$fontSize(16),
-                    left:this.$fontSize(22),
+          left:this.$fontSize(22),
           textStyle: {
             color: "#60dbdc",
             fontSize: this.$fontSize(20),
@@ -54,7 +54,6 @@ export default {
           left: "50",
           right: "40",
           bottom: "40",
-
           textStyle: {
             color: "#fff"
           }
@@ -121,7 +120,6 @@ export default {
 
           }
         ],
-
         series: [
           {
             name: "党员年龄结构",
@@ -175,7 +173,15 @@ export default {
   },
   mounted() {
     this.setChart();
-  }
+  },
+   watch: {
+    data: {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        this.setChart();
+      },
+    },
+  },
 };
 </script>
 

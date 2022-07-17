@@ -3,10 +3,10 @@
         <div class="partyMember">
             <p class="title">党委成员</p>
              <ul class="personList">
-                <li v-for="(item,index) in personData" :key="index" @click="dialogVisible = true" class="item">
+                <li v-for="(item,index) in partyList" :key="index" @click="getDetail(item.id)" class="item">
                     <a href="javascript:;">
                         <div class="img">
-                            <img :src="item.imgSrc" alt="">
+                            <img :src="item.picture" alt="">
                         </div>
                         <div class="txt">
                             <p class="name">姓名：{{item.name}}</p>
@@ -20,10 +20,10 @@
         <div class="villageMember">
             <div class="title">村委成员</div>
              <ul class="personList">
-                <li v-for="(item,index) in personData" :key="index" @click="dialogVisible = true" class="item">
+                <li v-for="(item,index) in villageList" :key="index" @click="getDetail(item.id)" class="item">
                     <a href="javascript:;">
                         <div class="img">
-                            <img :src="item.imgSrc" alt="">
+                            <img :src="item.picture" alt="">
                         </div>
                         <div class="txt">
                             <p class="name">姓名：{{item.name}}</p>
@@ -38,40 +38,23 @@
             :visible.sync="dialogVisible"
             width="50%"
             :before-close="handleClose">
-            <party-member></party-member>
-            </el-dialog>
+            <party-member :data= detailData></party-member>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import partyMember from '@/components/partyBuilding/popup/partyMember.vue'
+import {getTwoCommitteesCadreList,getTwoCommitteesCadreInfo} from "@/api/party";
+import { mapState} from "vuex";
 export default {
     name: 'personnelAdministration',
     data() {
         return {
              dialogVisible:false,
-             personData:[
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党建办公室科员"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党政综合办公室主任",
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党建办公室科员"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党政综合办公室主任",
-                }
-             ],
+             detailData:{}, //人员详情数据
+             partyList:[], //党委成员
+             villageList:[] //村委成员
         };
     },
      components:{
@@ -80,12 +63,59 @@ export default {
     mounted() {
         
     },
-
+    created(){
+        if(this.$store.state.menu.id.indexOf("_")!==-1){
+          this.id = this.$store.state.menu.id.substr(this.$store.state.menu.id.indexOf("_")+1);
+          this.getTwoCommitteesCadreList(this.id)
+      }
+    },
     methods: {
          handleClose(done) {
             done();
-        }
+        },
+        async getTwoCommitteesCadreList(){
+          try{
+            const {data} = await getTwoCommitteesCadreList(this.id);
+            this.villageList = data.villageList;
+            this.partyList = data.partyList;
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "error"
+                });
+            }
+        },
+        async getDetail(id){
+            try{
+                const {data} = await getTwoCommitteesCadreInfo(id);
+                this.detailData = data;
+                this.dialogVisible = true
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "success"
+                });
+            }
+        },
     },
+     watch: {
+    '$store.state.menu': {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        console.log(newValue,oldValue,"333")
+        this.id = newValue.id
+         if(this.id.indexOf("_")!==-1){
+          this.id = this.id.substr(this.id.indexOf("_")+1);
+         }
+        if(newValue.name == "lwgbgl"){
+            this.getTwoCommitteesCadreList()
+        }
+        
+      },
+    },
+}
 };
 </script>
 
@@ -106,17 +136,18 @@ export default {
     }
      .personList{
         display: flex;
-        justify-content: space-between;
+        
         flex-wrap: wrap;
         width:100%;
         margin-top:60px;
     }
     .personList li{
-        width:23%;
+        width:25%;
         background: url("@/assets/images/organizationBg.png") no-repeat center center;
         background-size:100% 100%;
         padding:34px 34px 20px 12px;
-        margin-bottom:34px;
+        margin:0 1% 34px;
+        
     }
     .item .img{
         width:109px;

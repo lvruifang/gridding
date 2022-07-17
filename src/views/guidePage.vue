@@ -1,22 +1,23 @@
-<template>
+/* <template>
     <div class="guide">
         <!-- <router-link to="/zhdj/zzjg">智慧党建</router-link>
         <router-link to="/zhwg">智慧网格</router-link>
         <button>智慧防疫</button>
         <button>智慧地图</button> -->
+        <a href="javascript:;" class="logout" @click="logout">退出</a>
         <div class="title">
             <img  src="@/assets/images/logo.png">
             <div class="txt">
                 <h2>欢迎进入东花园镇智慧网格系统</h2>
                 <p>Welcome  to  the  smart  grid  system  of  donghuayuan  town</p>
             </div>
-		</div>
+		    </div>
         <div class="list">
             <ul>
                 <li @click="go('/zhdj/zzjg')">
                     <a href="javascript:;">
                         <i class="iconfont icon-dangjian-"></i>
-						<p class="t">智慧党建</p>
+						            <p class="t">智慧党建</p>
                         <p class="tabT">组织架构</p>
                         <div class="zzjgTab">
                             <span>党委</span>
@@ -40,7 +41,7 @@
                 <li class="zhwg" @click="go('/zhwg/sy')">
                     <a href="javascript:;">
                         <i class="iconfont icon-24gf-appsBig4"></i>
-						<p class="t">智慧网格</p>
+						            <p class="t">智慧网格</p>
                         <div class="inner">
                             <div class="tab">
                             <p class="tabT">街村</p>
@@ -61,38 +62,37 @@
                  <li @click="go('/zhfy/lddw')">
                     <a href="javascript:;">
                         <i class="iconfont icon-fangyi"></i>
-						<p class="t">智慧防疫</p>
-						<p class="tabT">流动人员</p>
+						            <p class="t">智慧防疫</p>
+						            <p class="tabT">流动人员</p>
                         <p class="tabT">重点防疫点</p>
                         <div class="zzjgTab">
                             <span>酒店</span>
                             <span>学校</span>
                             <span>养老院</span>
                         </div>
-						<p class="tabT">流调队伍</p>
-						<p class="tabT">核酸采集点</p>
-						<p class="tabT">疫苗信息</p>
+                        <p class="tabT">流调队伍</p>
+                        <p class="tabT">核酸采集点</p>
+                        <p class="tabT">疫苗信息</p>
+                                </a>
+                            </li>
+                            <li @click="go('/bigData/djfx')">
+                                <a href="javascript:;">
+                                    <i class="iconfont icon-ditu"></i>
+                        <p class="t">智慧地图</p>
+                        <p class="tabT">数据总览</p>
+                        <p class="tabT">流调队伍</p>
+                        <p class="tabT">核酸采集点</p>
+                        <p class="tabT">疫苗信息</p>
                     </a>
                 </li>
-                 <li @click="go('/bigData/djfx')">
-                    <a href="javascript:;">
-                        <i class="iconfont icon-ditu"></i>
-						<p class="t">智慧地图</p>
-						<p class="tabT">数据总览</p>
-						<p class="tabT">流调队伍</p>
-						<p class="tabT">核酸采集点</p>
-						<p class="tabT">疫苗信息</p>
-                    </a>
-                </li>
-
             </ul>
         </div>
-        
     </div>
 </template>
 
 <script>
 import "@/assets/font/iconfont.css";
+import { logout } from '@/api/user'
 export default {
   name: "guidePage",
 
@@ -105,6 +105,18 @@ export default {
   methods: {
     go(url) {
       this.$router.push({ path: url });
+    },
+    async logout (){
+      try {
+        await logout();
+        this.$router.push({name:"login"})
+      } catch (err) {
+          this.$message({
+          message: err.msg,
+          offset:400,
+          type: 'success'
+          });
+      }
     }
   },
   beforeCreate() {}
@@ -112,6 +124,25 @@ export default {
 </script>
 
 <style scoped>
+.guide{
+  position: relative;
+}
+.logout{
+  position: absolute;
+  display: block;
+  width:86px;
+  height:32px;
+  border-radius: 32px;
+  text-align: center;
+  line-height:32px;
+  font-size:16px;
+  color:#43c8ff;
+  font-weight:bold;
+  right: 30px;
+  top:23px;
+  border:solid 1px #308fbd;
+  box-shadow: 0px 0px 4px  rgba(62, 197, 255, 0.58);
+}
 .guide h2,
 .guide .txt p {
   font-family: "Microsoft JhengHei";
@@ -269,4 +300,4 @@ export default {
   padding: 0 20px;
   margin-bottom: 40px;
 }
-</style>
+</style> */

@@ -4,42 +4,41 @@
         <el-row class="wrap">
             <el-col :span="10">
                 <div class="grid-content bg-purple left">
-                    <el-carousel :interval="5000" arrow="always" indicator-position="none">
+                    <!-- <el-carousel :interval="5000" arrow="always" indicator-position="none">
                     <el-carousel-item v-for="(url,index) in urls" :key="index">
                         <el-image  :src="url" ></el-image>
                     </el-carousel-item>
-                </el-carousel>
+                </el-carousel> -->
+                  <img :src="partyOrganizationInfo.picture" style="width:100%;height:300px;" alt="">
                 <el-row>
                     <el-col :span="5"><div class="grid-content bg-purple">所属网格</div></el-col>
-                    <el-col :span="8"><div class="grid-content bg-purple-light">大南辛堡村</div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple-light">{{partyOrganizationInfo.one_name}}</div></el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5"><div class="grid-content bg-purple">网格员</div></el-col>
-                    <el-col :span="8"><div class="grid-content bg-purple-light">会议室</div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple-light">{{partyOrganizationInfo.one_member}}</div></el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5"><div class="grid-content bg-purple">所属上级</div></el-col>
-                    <el-col :span="8"><div class="grid-content bg-purple-light">大南辛堡村</div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple-light">{{partyOrganizationInfo.superior}}</div></el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5"><div class="grid-content bg-purple">党支部级别 </div></el-col>
-                    <el-col :span="8"><div class="grid-content bg-purple-light">党支部</div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple-light">{{partyOrganizationInfo.classification}}</div></el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5"><div class="grid-content bg-purple">党支部负责人</div></el-col>
-                    <el-col :span="8"><div class="grid-content bg-purple-light">李云雁</div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple-light">{{partyOrganizationInfo.head}}</div></el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="5"><div class="grid-content bg-purple">党支部地址 </div></el-col>
-                    <el-col :span="8"><div class="grid-content bg-purple-light">大南幸堡村党委办公室</div></el-col>
+                    <el-col :span="8"><div class="grid-content bg-purple-light">{{partyOrganizationInfo.address}}</div></el-col>
                 </el-row>
                 </div>
             </el-col>
             <el-col :span="14">
                 <div class="grid-content bg-purple-light right">
-                    <p>大南幸堡党支部共有党员12名，其中在职党员9名，离岗党员3名。支部党员中有党员领导干部4人，具有中学高级职称的2人，具有中级职称的9人，初级职称的1人；1名研究生，11本科学历。</p>
-                    <p>支部委员会由党支部书记、组织委员、宣传委员3人组成。我校党支部把十八大精神和习近平总书记系列讲话贯穿于全体党员教育工作的始终：努力建设一支充满朝气、求真务实、奋发有为、勇于创新的班子队伍；建设一支党性强、奉献精神强、大力探索新模式、新方法、成为学校改革和发展的先锋党员队伍；建设一支具有现代教育理念、教艺精湛、师德高尚、一专多用的教师队伍。以党建促特色，以创新求发展，现正为建设一流的党支部而努力奋斗。</p>
-                    <p>支部委员会由党支部书记、组织委员、宣传委员3人组成。我校党支部把十八大精神和习近平总书记系列讲话贯穿于全体党员教育工作的始终：努力建设一支充满朝气、求真务实、奋发有为、勇于创新的班子队伍；建设一支党性强、奉献精神强、大力探索新模式、新方法、成为学校改革和发展的先锋党员队伍；建设一支具有现代教育理念、教艺精湛、师德高尚、一专多用的教师队伍。以党建促特色，以创新求发展，现正为建设一流的党支部而努力奋斗。</p>
+                    <p>{{partyOrganizationInfo.intro}}</p>
                 </div>
             </el-col>
     </el-row>
@@ -47,24 +46,69 @@
 </template>
 
 <script>
+import {getPartyOrganizationInfo} from "@/api/party";
+import { mapState} from "vuex";
 export default {
   name: "organizationManagement",
 
   data() {
     return {
-      urls: [
-        require("@/assets/images/img.jpg"),
-        require("@/assets/images/img.jpg"),
-        require("@/assets/images/img.jpg"),
-        require("@/assets/images/img.jpg")
-      ]
+      id:"",
+      // urls: [
+      //   require("@/assets/images/img.jpg"),
+      //   require("@/assets/images/img.jpg"),
+      //   require("@/assets/images/img.jpg"),
+      //   require("@/assets/images/img.jpg")
+      // ],
+      partyOrganizationInfo:{
+
+      }
     };
   },
+  created(){
+     if(this.$store.state.menu.id.indexOf("_")!==-1){
+          this.id = this.$store.state.menu.id.substr(this.$store.state.menu.id.indexOf("_")+1);
+          this.getPartyOrganizationInfo()
+      }
+      
+  },
+  mounted() {
+    
+  },
 
-  mounted() {},
+  methods: {
 
-  methods: {}
-};
+     async getPartyOrganizationInfo(){
+          try{
+            const {data} = await getPartyOrganizationInfo(this.id);
+            this.partyOrganizationInfo = data;
+            
+        }catch(err){
+            this.$message({
+            message: err,
+            offset: 400,
+            type: "success"
+            });
+        }
+    }
+  },
+   watch: {
+    '$store.state.menu': {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        console.log(newValue,oldValue,"333")
+        this.id = newValue.id
+         if(this.id.indexOf("_")!==-1){
+          this.id = this.id.substr(this.id.indexOf("_")+1);
+         }
+        if(newValue.name == "dzzgl"){
+            this.getPartyOrganizationInfo()
+        }
+        
+      },
+    },
+}
+}
 </script>
 
 <style scoped>

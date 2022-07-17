@@ -156,6 +156,6 @@ const routes = [
 ]
 //4.生成路由对象
 export default new Router({
-  routes //routes是固定key(传入规则数组 名字一样可以简写)
+  routes ,//routes是固定key(传入规则数组 名字一样可以简写)
+  // mode:'history'
 })
- 

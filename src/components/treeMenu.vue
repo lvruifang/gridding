@@ -8,12 +8,13 @@
         <el-tree
         :data="treeDataObj.data"
         :props="defaultProps"
-
+        ref="tree"
         accordion
         node-key="id"
         @node-click="handleNodeClick"
-        :default-expanded-keys="[3]"
-        :current-node-key="5"
+        :default-expanded-keys="treeDataObj.expandedKeys"
+        :current-node-key="treeDataObj.nodeKey"
+        
         >
         </el-tree>
     </div>
@@ -22,25 +23,35 @@
     
 </template>
 <script>
+import {mapState,mapMutations} from 'vuex'
     export default {
         props:['treeDataObj'],
         name:'treeMenu',
         data () {
             return {
-
-
                 defaultProps: {
                     children: 'children',
                     label: 'label'
                 }
             }
         },
+        created(){
+           
+           
+        },
         methods: {
+            ...mapMutations({
+                changeState:'changeMenu'
+            }),
            handleNodeClick(data,node,obj){
-               if(data.name){
-                   this.$router.push({name:data.name})
-               }
-               
+                data.id = data.id.toString();
+            if (data.id.indexOf("1_") !== -1){
+                this.changeState(data)
+            }
+            if(data.name && data.id.indexOf("1_") !== -1){
+                this.$router.push({name:data.name})
+            }
+            
            }
         },
     }

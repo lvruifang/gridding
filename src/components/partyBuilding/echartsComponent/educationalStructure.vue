@@ -107,7 +107,7 @@ export default {
 
         series: [
           {
-            name: "党员年龄结构",
+            name: "党员学历结构",
             type: "bar",
 
             barGap: "10%",
@@ -158,7 +158,15 @@ export default {
   },
   mounted() {
     this.setChart();
-  }
+  },
+  watch: {
+    data: {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        this.setChart();
+      },
+    },
+  },
 };
 </script>
 

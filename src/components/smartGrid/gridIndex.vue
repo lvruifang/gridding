@@ -1,6 +1,5 @@
 <template>
     <div class="rightContent">
-
         <el-row class="tab1">
             <el-col :span="12" class="left">
                 <div class="grid-content bg-purple">
@@ -36,7 +35,7 @@
         <div class="tab2">
             <div class="left">
                 <div class="leftTab1">
-                     <p class="title">大南新堡村</p>
+                     <p class="title">{{formData.label}}</p>
                      <el-row class="item1">
                         <el-col :span="8"><div class="grid-content bg-purple">面积：10000km2</div></el-col>
                         <el-col :span="8"><div class="grid-content bg-purple-light">网格员：于海瑞(一级)</div></el-col>
@@ -44,85 +43,28 @@
                         </el-row>
                         <div class="item2">
                             <el-tabs v-model="activeName" @tab-click="handleClick">
-                            <el-tab-pane label="王东喜网格" name="first">
-                                <span>阜新网格</span><span>梁晓林网格</span><span>王莹网格</span><span>赵凯网格</span>    
-                            </el-tab-pane>
-                            <el-tab-pane label="茂文绣网格" name="second">
-                                <span>阜新网格</span><span>阜新网格</span><span>阜新网格</span><span>阜新网格</span><span>阜新网格</span>
+                            <el-tab-pane :label="item.label" :name="item.id" v-for="(item,index) in formData.children" :key="index">
+                                <span v-for="(item,index) in item.children" :key="index">{{item.label}}</span>   
                             </el-tab-pane>
                         </el-tabs>
                         </div>
-                        
+                         
                     </div>
                 <div class="leftTab2">    
-                    <baidu-map class="map" :center="{lng:  115.856035, lat: 40.337357}" :zoom="15">
-                      <bm-marker :position="{lng:  115.856035, lat:40.337357}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
-                        <bm-label content="大南新堡村" :labelStyle="{color: '#fff', fontSize : '14px', background:'#4cb2e5',border:'solid 0px red',padding:'6px 15px'}" :offset="{width: -35, height: 30}"/>
-                      </bm-marker>
-                    </baidu-map>
                 </div>  
                 <div class="leftTab3">
                     <el-pagination
                     layout="prev, pager, next"
-                    :total="50">
+                    :total="personTotal"
+                    :page-size=14
+                    @current-change = "currentChange"
+                    >
                     </el-pagination>
                     <p class="title">人口列表</p>
                     <ul>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                         <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                         <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
-                        </li>
-                        <li>
-                            <img src="@/assets/images/user.png" alt="">
-                            <p>王东喜</p>
+                        <li v-for="(item) in personnelList" :key="item.id">
+                            <img :src="item.picture" alt="">
+                            <p>{{item.name}}</p>
                         </li>
                     </ul>
                 </div>
@@ -134,39 +76,39 @@
                         <li>
                             <i class="iconfont icon-siyingqiye"></i>
                             <p class="name">建筑</p>
-                            <p class="num">160</p>
+                            <p class="num">{{bigData.buildingCount}}</p>
                         </li>
                         <li>
                             <i class="iconfont icon-fangwu"></i>
                             <p class="name">房屋</p>
-                            <p class="num">302</p>
+                            <p class="num">{{bigData.houseCount}}</p>
                         </li>
                         <li>
                             <i class="iconfont icon-zhengtitubiaosvg_renkou"></i>
                             <p class="name">人口</p>
-                            <p class="num">5320</p>
+                            <p class="num">{{bigData.personnelCount}}</p>
                         </li>
                         <li>
                             <i class="iconfont icon-bujian"></i>
                             <p class="name">部件</p>
-                            <p class="num">160</p>
+                            <p class="num">{{bigData.specialBuildingCount}}</p>
                         </li>
                     </ul>
                 </div>
                 <div class="rightTab2">
                     <el-row :gutter="20">
                         <el-col :span="12">
-                             <person-type :data="data"></person-type>
+                             <person-type :data="personnelType"></person-type>
                         </el-col>
                         <el-col :span="12">
-                            <key-groups :data="data5"> </key-groups>
+                            <key-groups :data="specialGroupsType"> </key-groups>
                         </el-col>
                     </el-row>
                 </div>
                 <div class="rightTab3">
                     <el-row>
                         <el-col :span="24">
-                             <age-distribution :data="data6"></age-distribution>
+                             <age-distribution :data="ageDistribution"></age-distribution>
                         </el-col>
                        
                     </el-row>
@@ -180,112 +122,44 @@
 import personType from "@/components/smartGrid/echartsComponent/personType";
 import keyGroups from "@/components/smartGrid/echartsComponent/keyGroups";
 import ageDistribution from "@/components/smartGrid/echartsComponent/ageDistribution";
-import { BmMarker } from "vue-baidu-map";
+  
+import { getBigData,personnelList } from "@/api/smartGrid";
 import "@/assets/font/iconfont.css";
+import { mapState } from 'vuex'
 export default {
   name: "gridIndex",
 
   data() {
     return {
-         activeName: 'second',
-      data: {
-       
+      activeName: '', //右侧二级网格默认选中的id
+      formData:{}, // 树形结构当前选中的网格的网格数据
+      bigData:{
+        buildingCount:0,
+        houseCount:0,
+        personnelCount:0,
+        specialBuildingCount:0,
+        ageDistribution:[], //年龄分布
+      }, //树形结构当前选中的网格的大数据
+      id:"",
+      map:{
+        pathData:[],
+        name:""
+      },
+      personnelType: {
         title: "人口数据类型分析",
-        data: [
-          {
-            value: 200,
-            name: "流动",
-            itemStyle: {
-              color: "#51afea"
-            }
-          },
-          {
-            value: 20,
-            name: "空挂",
-            itemStyle: {
-              color: "#76e9c0"
-            }
-          },
-
-          {
-            value: 100,
-            name: "外出",
-            itemStyle: {
-              color: "#eeba29"
-            }
-          },
-
-          {
-            value: 50,
-            name: "境外",
-            itemStyle: {
-              color: "#7781ad"
-            }
-          },
-          {
-            value: 4500,
-            name: "常住",
-            itemStyle: {
-              color: "#284ded"
-            }
-          }
-        ]
+        data: []
       },
-      data5: {
+      specialGroupsType: {
         title: "重点人群信息",
-        data: [
-          {
-            value: 335,
-            name: "艾滋病",
-            itemStyle: {
-              color: "#16f5e3"
-            }
-          },
-          {
-            value: 310,
-            name: "吸毒人员",
-            itemStyle: {
-              color: "#ffcc00"
-            }
-          },
-          {
-            value: 234,
-            name: "社区矫正",
-            itemStyle: {
-              color: "#6eff68"
-            }
-          },
-          {
-            value: 135,
-            name: "精神病",
-            itemStyle: {
-              color: "#ff6f6f"
-            }
-          },
-          {
-            value: 200,
-            name: "刑满释放",
-            itemStyle: {
-              color: "#bc74ff"
-            }
-          }
-        ]
+        data: []
       },
-      data6: {
+      ageDistribution: {
         title: "人口年龄分布",
-        data: [0, 116, 237, 116, 306, 1969, 1699, 903, 227],
-        areaNameS: [
-          "0-6岁",
-          "6-12岁",
-          "12-18岁",
-          "18-22岁",
-          "22-30岁",
-          "30-45岁",
-          "45-60岁",
-          "60-80岁",
-          "80以上"
-        ]
-      }
+        data: [],
+        areaNameS: []
+      },
+      personnelList:[], //人员列表
+      personTotal:0
     };
   },
   components: {
@@ -294,38 +168,205 @@ export default {
     ageDistribution
   },
   mounted() {
-      this.initMap()
+     
   },
-
+  created(){
+     
+  },
+  computed:{
+    ...mapState({
+      menu:state=>state.menu
+    })
+  },
+  watch: {
+    '$store.state.menu': {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+          this.formData = newValue;
+         //为id赋值
+         if(this.formData.id.indexOf("_")!==-1){
+          this.id = this.formData.id.substr(this.formData.id.indexOf("_")+1);
+         }
+         this.activeName = this.formData.children[0].id;
+         this.map.pathData = this.formData.map_info;
+         this.map.name = this.formData.label;
+         this.initMap(); //绘制地图
+         this.getBigData(); //获取大数据
+         this.getPersonnelList(1) //获取人员信息
+      },
+    },
+  },
   methods: {
        handleClick(tab, event) {
         console.log(tab, event);
       },
-      initMap(){
-          // var map = new BMapGL.Map('allmap');
-          //   var point = new BMapGL.Point(115.856035,40.337357);
-          //   map.centerAndZoom(point, 15);
-          //   // 创建点标记
-          //   var marker = new BMapGL.Marker(point);
-          //   map.addOverlay(marker);
-          //   // 创建信息窗口
-          //   var opts = {
-          //       width: 200,
-          //       height: 100,
-          //       title: '大南新堡村'
-          //   };
-          //   var infoWindow = new BMapGL.InfoWindow('地址：怀来县东花园镇大南新堡村', opts);
-          //   // 点标记添加点击事件
-          //   marker.addEventListener('click', function () {
-          //       map.openInfoWindow(infoWindow, point); // 开启信息窗口
-          //   });
+      initMap() {
+              let arr = JSON.parse(this.map.pathData) //获取树形结构当前选中的村落的地图数据
+              let path = [ ];
+              let x=0;
+              let y =0;
+              arr.forEach((item,index)=>{
+                x += item[0];
+                y += item[1];
+                path.push(new window.TMap.LatLng(item[0], item[1]),)
+              })
+              let centerPoint = [x/arr.length,y/arr.length]; //设置中心点坐标
+            //定义地图中心点坐标
+            let center =  new window.TMap.LatLng(centerPoint[0],centerPoint[1])
+            document.querySelector(".leftTab2").innerHTML='<div id="map" style="height:100%;color:#333;"></div>';
+            //定义map变量，调用 TMap.Map() 构造函数创建地图
+            let map = new window.TMap.Map(document.getElementById('map'), {
+                center: center,//设置地图中心点坐标
+                zoom: 13,   //设置地图缩放级别
+                pitch: 43.5,  //设置俯仰角
+                rotation: 45,   //设置地图旋转角度
+                viewMode:'2D'
+            });
+            //初始化polygon
+            let polygon = new window.TMap.MultiPolygon({
+                id: 'polygon-layer', //图层id
+                map: map, //设置多边形图层显示到哪个地图实例中
+                //多边形样式
+                styles: {
+                    'polygon': new window.TMap.PolygonStyle({
+                        'color': '#3777FF', //面填充色
+                        'showBorder':false, //是否显示拔起面的边线
+                        'borderColor': '#00FFFF' //边线颜色
+                    })
+                },
+                //多边形数据
+                geometries: [
+                    {
+                        'id': 'p1', //该多边形在图层中的唯一标识（删除、更新数据时需要）
+                        'styleId': 'polygon', //绑定样式名
+                        'paths': path, //多边形轮廓
+                    }
+                ]
+            });
+            //初始marker
+            let marker = new window.TMap.MultiMarker({
+                id: 'marker-layer',
+                map: map,
+                styles: {
+                    "marker": new window.TMap.MarkerStyle({
+                        "width": 24,
+                        "height": 35,
+                        "anchor": { x: 12, y: 35 },
+                        "src": 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png'
+                    })
+                },
+                geometries: [{
+                    "id": 'demo1',
+                    "styleId": 'marker',
+                    "position": new window.TMap.LatLng(centerPoint[0],centerPoint[1]),
+                    "properties": {
+                        "title": "marker"
+                    }
+                }, ]
+            });
+            //初始化infoWindow
+            let infoWindow = new window.TMap.InfoWindow({
+                map: map,
+                position: new window.TMap.LatLng(centerPoint[0],centerPoint[1]),
+                offset: { x: 0, y: -32 }, //设置信息窗相对position偏移像素
+              
+            });
+            infoWindow.close();//初始关闭信息窗关闭
+            //监听标注点击事件
+            marker.on("click", function (evt) {
+                //设置infoWindow
+                infoWindow.open(); //打开信息窗
+                infoWindow.setPosition(evt.geometry.position);//设置信息窗位置
+                infoWindow.setContent(this.map.name);//设置信息窗内容
+            })
+      },
+      currentChange(num){
+        console.log(num)
+        this.getPersonnelList(num)
+
+      },
+      //智慧网格根据一级网格id获取人员列表
+      async getPersonnelList(num){
+          try {
+            let param = {
+              id:this.id,
+              page:num,
+              page_size:14
+            }
+            const { data,count } = await personnelList(param);
+            this.personnelList = data;
+            this.personTotal = count;
+         
+          } catch(err){
+            this.$message({
+              message: err,
+              offset: 400,
+              type: "success"
+            });
+          }
+      },
+      async getBigData(){
+        try {
+            const { data } = await getBigData(this.id);
+            this.bigData = data;
+            console.log(data)
+           // 设置人口年龄分布
+            let areaNameS = [];
+            let counts = [];
+            let ageDistribution = this.bigData.ageDistribution;
+            ageDistribution.forEach((item,index)=>{
+                areaNameS.push(item.label);
+                counts.push(item.count)
+            })
+            this.ageDistribution = {
+                title: "人口年龄分布",
+                data: counts,
+                areaNameS: areaNameS
+            }
+            //设置人口数据类型分析
+            let personnelType = [];
+            let colorArr = ["#51afea","#76e9c0","#eeba29","#7781ad","#284ded"];
+            this.bigData.personnelType.forEach((item,index)=>{
+                let json = {
+                  value: item.num,
+                  name: item.label,
+                  itemStyle: {
+                    color: colorArr[index]
+                  }
+                }
+                personnelType.push(json)
+            })
+            this.personnelType.data = personnelType;
+
+            //设置重点人员信息分析
+            let specialGroupsType = [];
+            let colorArr1 = ["#16f5e3","#ffcc00","#6eff68","#ff6f6f","#bc74ff","#eeba29"];
+            this.bigData.specialGroupsType.forEach((item,index)=>{
+                let json = {
+                  value: item.num,
+                  name: item.label,
+                  itemStyle: {
+                    color: colorArr1[index]
+                  }
+                }
+                specialGroupsType.push(json)
+            })
+            this.specialGroupsType.data = specialGroupsType;
+        } catch(err) {
+          this.$message({
+            message: err,
+            offset: 400,
+            type: "success"
+          });
         }
+      }
+
     }
 };
 </script>
 
 <style scoped>
-.map {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+#map {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";color:#333}
 .tab1 {
   width: 100%;
   height: 214px;
@@ -405,7 +446,6 @@ export default {
 }
 .leftTab3 ul {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
   padding: 0 12px;
 }
@@ -416,7 +456,7 @@ export default {
     border:solid 1px #34648e;
 }
 .leftTab3 ul li {
-  width: 14%;
+  width: 14.285%;
   padding: 0 12px;
   margin-bottom: 20px;
   text-align: center;

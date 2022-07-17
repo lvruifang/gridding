@@ -17,8 +17,8 @@ export default {
       let option = {
         title: {
           text: this.data.title,
-         top: this.$fontSize(16),
-                    left:this.$fontSize(22),
+          top: this.$fontSize(16),
+          left:this.$fontSize(22),
           textStyle: {
             color: "#60dbdc",
             fontSize: this.$fontSize(20),
@@ -46,8 +46,8 @@ export default {
           {
             name: "会议分布",
             type: "pie",
-            radius: ["40%", "70%"],
-            center: ["50%", "55%"],
+            radius: ["40%", "60%"],
+            center: ["50%", "45%"],
             roseType: "area",
             itemStyle: {
               borderRadius: 8
@@ -70,7 +70,15 @@ export default {
   },
   mounted() {
     this.setChart();
-  }
+  },
+  watch: {
+    data: {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        this.setChart();
+      },
+    },
+  },
 };
 </script>
 

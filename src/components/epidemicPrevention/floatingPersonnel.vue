@@ -7,7 +7,7 @@
                     <div class="des">
                         <img src="@/assets/images/sheng.png" alt="">
                         <span>跨省流动人数</span>
-                        <span class="num">5000</span>
+                        <span class="num">{{mobilityPersonnelBigData.crossProvinceCount}}</span>
                     </div>
                 </div>
             </el-col>
@@ -17,7 +17,7 @@
                     <div class="des">
                         <img src="@/assets/images/shi.png" alt="">
                         <span>跨市流动人数</span>
-                        <span class="num" style="color:#ffc70c;">3000</span>
+                        <span class="num" style="color:#ffc70c;">{{mobilityPersonnelBigData.crossCityCount}}</span>
                     </div>
                 </div>
             </el-col>
@@ -27,19 +27,16 @@
                     <div class="des">
                         <img src="@/assets/images/shi.png" alt="">
                         <span>跨县流动人数</span>
-                        <span class="num" style="color:#92d5ff;">2000</span>
+                        <span class="num" style="color:#92d5ff;">{{mobilityPersonnelBigData.crossCountyCount}}</span>
                     </div>
                 </div>
             </el-col>
         </el-row>
-
+        <button class="fxypBtn" @click="rowClick">分析研判</button>
          <el-table
         :cell-style="cellStyle"
-        :data="tableData"
-        @row-click="rowClick"
+        :data="mobilityPersonnelList"
         style="width: 100%"
-        
-        
        >
         <el-table-column
         type="index"
@@ -63,34 +60,36 @@
         >
         </el-table-column>
         <el-table-column
-        prop="ID"
+        prop="id_number"
         align="center"
         min-width=188,
         label="身份证号">
         </el-table-column>
         <el-table-column
-        prop="time"
+        prop="arrive_date"
         align="center"
         min-width=106,
         label="时间（来怀）">
         </el-table-column>
         <el-table-column
-        prop="visitingPlace"
+        prop="from_place"
         align="center"
+        min-width=106,
         label="来访地">
         </el-table-column>
         <el-table-column
-        prop="placeOfVisit"
+        prop="to_place"
         align="center"
+        min-width=166,
         label="到访地">
         </el-table-column>
         <el-table-column
-        prop="subjectMatter"
+        prop="subject_matter"
         align="center"
         label="事由">
         </el-table-column>
         <el-table-column
-        prop="phone"
+        prop="mobile"
         align="center"
         min-width=115,
         label="电话">
@@ -98,101 +97,103 @@
         <el-table-column
         prop="nuclein"
         align="center"
-        label="核算">
+        label="核酸">
         </el-table-column>
-        <el-table-column  min-width=114, align="center">
-        <template >
-            <a href="javascript:;">分析研判 ></a>
-        </template>
-        </el-table-column>
-    </el-table>
+        </el-table>
+        <div class="pagination">
+            <el-pagination
+            background
+            v-if = "total > 6"
+            layout="prev, pager, next"
+            :total=total
+            :page-size=pageSize
+            @current-change = "currentChange"
+            class="pagination"
+            >
+            </el-pagination>
+        </div>
     </div>
 </template>
-
+ 
 <script>
+import { mapState } from "vuex";
+import { getMobilityPersonnelBigData,getMobilityPersonnelList } from "@/api/antiepidemic";
 export default {
     name: 'floatingPersonnel',
-
     data() {
         return {
-             tableData: [
-                {
-                    name:"张一山",
-                    sex:"男",
-                    ID:"130730198701253441",
-                    time: "2016-05-02",
-                    visitingPlace:"河北 邯郸",
-                    placeOfVisit:"河北 怀来",
-                    subjectMatter:"探亲",
-                    phone:"18810068960",
-                    nuclein:"阴性",
-                },
-                 {
-                    name:"张一山",
-                    sex:"男",
-                    ID:"130730198701253441",
-                    time: "2016-05-02",
-                    visitingPlace:"河北 邯郸",
-                    placeOfVisit:"河北 怀来",
-                    subjectMatter:"探亲",
-                    phone:"18810068960",
-                    nuclein:"阴性",
-                },
-                 {
-                    name:"张一山",
-                    sex:"男",
-                    ID:"130730198701253441",
-                    time: "2016-05-02",
-                    visitingPlace:"河北 邯郸",
-                    placeOfVisit:"河北 怀来",
-                    subjectMatter:"探亲",
-                    phone:"18810068960",
-                    nuclein:"阴性",
-                },
-                 {
-                    name:"张一山",
-                    sex:"男",
-                    ID:"130730198701253441",
-                    time: "2016-05-02",
-                    visitingPlace:"河北 邯郸",
-                    placeOfVisit:"河北 怀来",
-                    subjectMatter:"探亲",
-                    phone:"18810068960",
-                    nuclein:"阴性",
-                },
-                 {
-                    name:"张一山",
-                    sex:"男",
-                    ID:"130730198701253441",
-                    time: "2016-05-02",
-                    visitingPlace:"河北 邯郸",
-                    placeOfVisit:"河北 怀来",
-                    subjectMatter:"探亲",
-                    phone:"18810068960",
-                    nuclein:"阴性",
-                },
-            ],
+            mobilityPersonnelList: [],
+            pageSize:6,
+            mobilityPersonnelBigData:{},
+            total:0,
         };
     },
 
-    mounted() {
-        
+    created() {
+        this.getMobilityPersonnelBigData();
+        this.getMobilityPersonnelList(1);
     },
 
     methods: {
-         rowClick(){
+        rowClick(){
             this.$router.push({name:"ldryxq"}) 
         },
-         cellStyle ({row, column, rowIndex, columnIndex}) {
+        cellStyle ({row, column, rowIndex, columnIndex}) {
             if (columnIndex == 0){
                 return {'color':'#5abbff'}
             }
-        }
+        },
+        currentChange(num){
+            this.getMobilityPersonnelList(num);
+        },
+        async getMobilityPersonnelBigData(){
+          try {
+            const { data } = await getMobilityPersonnelBigData();
+            this.mobilityPersonnelBigData = data;
+          } catch(err){
+            this.$message({
+              message: err,
+              offset: 400,
+              type: "error"
+            });
+          }
+        },
+        async getMobilityPersonnelList(num){
+          try {
+            const { data,count } = await getMobilityPersonnelList({
+                page:num,
+                page_size:this.pageSize
+            });
+            this.mobilityPersonnelList = data;
+            this.total = count;
+          } catch(err){
+            this.$message({
+              message: err,
+              offset: 400,
+              type: "error"
+            });
+          }
+        },
     },
 };
 </script>
 
-<style slot-scope="scope">
+<style scoped>
+    .fxypBtn{
+        margin-bottom:-70px;
+        width:300px;
+        height:50px;
+        line-height: 50px;
+        cursor: pointer;
+        float:right;
+        color:#fff;
+        font-size: 18px;
+        background:url("@/assets/images/btnBg.png") no-repeat 100% 100%;
+        padding:0;
+        margin:15px 0;
+        border-width:0;
+        border-radius: 0px;
+    }
     .list{
         width:100%;
         height:150px;
@@ -202,7 +203,7 @@ export default {
         position: relative;
          color:#d4eaf6;
     }
-    .title{
+    .rightContent .title{
         font-size:20px;
         color:#92d5ff;
         position: relative;

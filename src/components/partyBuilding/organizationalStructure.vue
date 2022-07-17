@@ -1,117 +1,167 @@
 <template>
     <div class="rightContent">
         <div class="top">
-            <div class="item">
-                <a href="javascript:;">
-                    <div class="img">
-                        <img src="@/assets/images/partyImg.jpg" alt="">
-                    </div>
-                    <div class="txt">
-                        <p class="name">姓名：李云雁</p>
-                        <p>职务：东花园镇党委组织委员兼党建办主任</p>
-                        <span>详细</span>
-                    </div>
-                </a>
+            <div class="left">
+                <div class="title">
+                    {{organizationStructureInfo.organization}}
+                </div>
+                <p>{{organizationStructureInfo.address}}</p>
             </div>
-            <div class="txt">
-                <p class="title">简介</p>
-                <p>李云雁，男，汉族，1964年11月生，江苏苏州人，1985年6月加入中国共产党，1987年8月参加工作，南京师范大学生物系生物专业毕业，大学学历。</p>
-            </div>
-            <div class="txt">
-                <p class="title">履历</p>
-               <p>1983.09--1985.09苏州师范专科学校生化科生物专业学习</p>
-               <p>1983.09--1985.09苏州师范专科学校生化科生物专业学习</p>
-               <p>1983.09--1985.09苏州师范专科学校生化科生物专业学习</p>
-               <p>1983.09--1985.09苏州师范专科学校生化科生物专业学习</p>
+            <div class="right">
+                <div class="title">
+                    简介
+                    <a @click="getDetail1()" href="javascript:;">详细</a>
+                </div>
+                <p>{{organizationStructureInfo.intro}}</p>
             </div>
         </div>
         <ul class="personList">
-                <li v-for="(item,index) in personData" :key="index" @click="dialogVisible = true" class="item">
-                    <a href="javascript:;">
-                        <div class="img">
-                            <img :src="item.imgSrc" alt="">
-                        </div>
-                        <div class="txt">
-                            <p class="name">姓名：{{item.name}}</p>
-                            <p>职务：{{item.post}}</p>
-                            <span>详细</span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-            <el-dialog
-            :visible.sync="dialogVisible"
-            width="50%"
-            :before-close="handleClose">
-            <party-member></party-member>
-            </el-dialog>
+            <li v-for="(item,index) in personData" :key="index" @click="getDetail(item.id)" class="item">
+                <a href="javascript:;">
+                    <div class="img">
+                        <img :src="item.picture" alt="">
+                    </div>
+                    <div class="txt">
+                        <p class="name">姓名：{{item.name}}</p>
+                        <p>职务：{{item.post}}</p>
+                        <span>详细</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        <el-pagination
+        background
+        layout="prev, pager, next"
+        v-if = "total > 8"
+        :total=total
+        :page-size=pageSize
+        @current-change = "currentChange"
+        class="pagination"
+        >
+        </el-pagination>
+        <el-dialog
+        :visible.sync="dialogVisible"
+        width="50%"
+        :before-close="handleClose">
+        <party-member :data=detailData></party-member>
+        </el-dialog>
+
+        </el-pagination>
+        <el-dialog
+        :visible.sync="dialogVisible1"
+        width="80%"
+        :before-close="handleClose">
+        <organization-structure-info :data = organizationStructureInfo></organization-structure-info>
+        </el-dialog>
     </div> 
 </template>
 
 <script>
 import partyMember from '@/components/partyBuilding/popup/partyMember.vue'
+import organizationStructureInfo from '@/components/partyBuilding/popup/organizationStructureInfo.vue'
+import {organizationStructureMemberList,getOrganizationStructureMemberInfo,getOrganizationStructureInfo } from "@/api/party";
+import { mapState} from "vuex";
 export default {
     name: 'organizationalStructure',
 
     data() {
         return {
-             personData:[
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党建办公室科员"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党政综合办公室主任",
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党建办公室科员"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党政综合办公室主任",
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党建办公室科员"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党政综合办公室主任",
-                },
-                {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党建办公室科员"
-                },
-                 {
-                    name:"王炜哲",
-                    imgSrc:require("@/assets/images/partyImg.jpg"),
-                    post:"党政综合办公室主任",
-                }
-             ],
+             personData:[], //人员列表 
              dialogVisible:false,
+             id:"",
+             total:1000,
+             pageSize:8,
+             detailData:{}, //人员详情数据
+             organizationStructureInfo:{}, //组织架构详情数据
+             dialogVisible1:false
         };
     },
     components:{
-        partyMember
+        partyMember,
+        organizationStructureInfo
     },
     mounted() {
-        
+       
     },
-
+    created(){
+         if(this.$store.state.menu.id.indexOf("_")!==-1){
+          this.id = this.$store.state.menu.id.substr(this.$store.state.menu.id.indexOf("_")+1);
+           this.getOrganizationStructureMemberList(1);
+            this.getOrganizationStructureInfo()
+         }
+       
+    },
     methods: {
+        currentChange(num){
+            this.getOrganizationStructureMemberList(num)
+        },
         handleClose(done) {
             done();
+        },
+        async getOrganizationStructureMemberList(num){
+            try{
+                let param = {
+                    id:this.id,
+                    page_size:this.pageSize,
+                    page:num
+                }
+                const {data,count} = await organizationStructureMemberList(param);
+               this.personData = data;
+               this.total = count
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "success"
+                });
+            }
+        },
+        async getDetail(id){
+            
+            try{
+                const {data} = await getOrganizationStructureMemberInfo(id);
+                this.detailData = data;
+                 this.dialogVisible = true
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "success"
+                });
+            }
+        },
+        getDetail1(){
+             this.dialogVisible1 = true
+        },
+        async getOrganizationStructureInfo(){
+             try{
+                const {data} = await getOrganizationStructureInfo(this.id);
+                this.organizationStructureInfo = data;
+            }catch(err){
+                this.$message({
+                message: err,
+                offset: 400,
+                type: "success"
+                });
+            }
         }
     },
+    watch: {
+    '$store.state.menu': {
+      deep: true, //深度监听
+      handler(newValue, oldValue) {
+        this.id = newValue.id
+         if(this.id.indexOf("_")!==-1){
+          this.id = this.id.substr(this.id.indexOf("_")+1);
+         }
+        if(newValue.name == "zzjg"){
+            this.getOrganizationStructureMemberList(1);
+            this.getOrganizationStructureInfo()
+        }
+        
+      },
+    },
+  },
 };
 </script>
 
@@ -119,28 +169,57 @@ export default {
     .top{
         background: url("@/assets/images/organizationTopBg.png") no-repeat center center;
          background-size:100% 100%;
-         padding:35px 0 22px 23px;
+         padding:0 35px;
+         height:205px;
+         align-items: center;
          display: flex;
          justify-content: space-between;
          margin-top:70px;
+         position: relative;
     }
-    .top .item{
-        width:25%;
+    .top .left{
+        text-align: center;
+        width:321px;
+     }
+    .top .left .title{
+        font-size: 40px;
+        font-weight:bold;
+        color:#92d5ff;
+        margin-bottom: 10px;
+        
     }
-    .top .txt{
-        color:#fefefe;
+    .top .left p{
+        font-size: 20px;
+        color:#92d5ff;
+    }
+    .top .right{
+        flex:1;
+        padding-left:57px;
         font-size: 16px;
-        width:34%;
-
+        color:#fff;
+        line-height: 1.7;
     }
-    .top .txt .title{
-        color:#7de2f6;
+    .top .right a{
+        display: block;
+        width:112px;
+        height:31px;
+        line-height: 31px;
+        text-align: center;
+        font-size: 16px;
+        color:#fefefe;
+        border-radius: 31px;
+        background-image: linear-gradient( to right, rgba(81,29,175,0.5), rgba(35,215,254,0.5));
+       position: absolute;
+       right:42px;
+       top:32px;
+    }
+    .top .right .title{
         font-size: 18px;
-        margin-bottom:15px;
+        color:#7de2f6;
+        margin-bottom:24px;
     }
     .personList{
         display: flex;
-        justify-content: space-between;
         flex-wrap: wrap;
         width:100%;
         margin-top:60px;
@@ -150,7 +229,7 @@ export default {
         background: url("@/assets/images/organizationBg.png") no-repeat center center;
         background-size:100% 100%;
         padding:34px 34px 20px 12px;
-        margin-bottom:34px;
+        margin:0 1% 34px;
     }
     .item .img{
         width:109px;

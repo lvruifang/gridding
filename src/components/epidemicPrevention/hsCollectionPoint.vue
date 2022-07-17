@@ -6,92 +6,91 @@
                 <div class="list">
                     <img src="@/assets/images/hsjc.png" alt="">
                     <span>核酸采集点总数</span>
-                    <span class="num">50</span>
+                    <span class="num">{{numCount.totalCount}}</span>
                 </div>
             </el-col>
              <el-col :span="6">
                 <div class="list">
                     <img src="@/assets/images/yy.png" alt="">
                     <span>公立医院</span>
-                    <span class="num" style="color:#ffc70c;">26</span>
+                    <span class="num" style="color:#ffc70c;">{{numCount.hospitalCount}}</span>
                 </div>
             </el-col>
              <el-col :span="6">
                 <div class="list">
                     <img src="@/assets/images/sq.png" alt="">
                     <span>社区采集点</span>
-                    <span class="num" style="color:#92d5ff;">80</span>
+                    <span class="num" style="color:#92d5ff;">{{numCount.communityCount}}</span>
                 </div>
             </el-col>
             <el-col :span="6">
                 <div class="list">
                     <img src="@/assets/images/yljg.png" alt="">
-                    <span>医疗机构</span>
-                    <span class="num" style="color:#92d5ff;">20</span>
+                    <span>临时采集点</span>
+                    <span class="num" style="color:#92d5ff;">{{numCount.temporaryCount}}</span>
                 </div>
             </el-col>
         </el-row>
         <ul class="cjdWrap">
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
-            </li>
-            <li>
-                <img src="@/assets/images/cjdImg.jpg" alt="">
-                <p class="t">第一人民医院</p>
-                <p>地址：花园东镇汉威国际广场3区5号楼3层电话：400-120-123456</p>
+            <li v-for="(item) in nucleicAcidTestPointLis" :key="item.id">
+                <img :src="item.picture" alt="">
+                <p class="t">{{item.name}}</p>
+                <p>地址：{{item.address}}电话：{{item.contact}}</p>
             </li>
         </ul>
+        <el-pagination
+        background
+        layout="prev, pager, next"
+        v-if = "total > 8"
+        :total=total
+        :page-size=pageSize
+        @current-change = "currentChange"
+        class="pagination"
+        >
+        </el-pagination>
     </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { getNucleicAcidTestPointList } from "@/api/antiepidemic";
 export default {
     name: 'hsCollectionPoint',
 
     data() {
         return {
-            
+            nucleicAcidTestPointLis: [],
+            pageSize:8,
+            total:0,
+            numCount:{}
         };
     },
 
-    mounted() {
-        
+    created() {
+        this.getNucleicAcidTestPointList(1)
     },
 
     methods: {
-        
+        currentChange(num){
+            this.getNucleicAcidTestPointList(num)
+        },
+         async getNucleicAcidTestPointList(num){
+          try {
+            const { data,count,numCount} = await getNucleicAcidTestPointList({
+                page:num,
+                page_size:this.pageSize
+            });
+            this.nucleicAcidTestPointLis = data;
+            this.total = count;
+            this.numCount = numCount
+          } catch(err){
+            this.$message({
+              message: err,
+              offset: 400,
+              type: "error"
+            });
+          }
+        },
     },
 };
 </script>
@@ -113,7 +112,7 @@ export default {
         top:-11px;
         font-size: 20px;
         color:#92d5ff;
-    }
+    } 
     .list{
         width:100%;
         height:100%;

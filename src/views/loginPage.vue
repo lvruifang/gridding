@@ -16,8 +16,8 @@
                             <img src="@/assets/images/logo.png" alt="">
                             <p>东花园镇智慧网格系统</p>
                         </div>
-                        <div class="form">
-                            <h2>用户登录</h2>
+                        <!-- <div class="form">
+                            
                             <div class="item"> 
                                 <img src="@/assets/images/login-user.png" alt="">
                                 <input type="text" placeholder="请输入用户名">
@@ -31,7 +31,24 @@
                                   <a href="javascript:;">忘记密码?</a>
                              </div>
                              <a href="javascript:;" class="btn" @click="login()">登录</a>
-                        </div>
+                        </div> -->
+                         <div class="form">
+                            <h2>用户登录</h2>
+                            <el-form :model="ruleForm" :rules="rules" ref="ruleForm"  class="demo-ruleForm">
+                                <el-form-item  prop="user_name">
+                                    <el-input v-model="ruleForm.user_name" prefix-icon="el-icon-user"  placeholder="请输入用户名"></el-input>
+                                </el-form-item>
+                                <el-form-item  prop="password">
+                                    <el-input v-model="ruleForm.password" prefix-icon="el-icon-unlock"  placeholder="请输入密码"></el-input>
+                                </el-form-item>
+                                <!-- <div class="aboutPassword">
+                                    <el-checkbox label="记住密码"></el-checkbox>
+                                    <a href="javascript:;">忘记密码?</a>
+                                </div> -->
+                                <a href="javascript:;" class="btn" @click="submitForm('ruleForm')">登录</a>
+                            </el-form>
+                        </div> 
+                        
                     </div>
                </div>
             </div>
@@ -40,22 +57,50 @@
 </template>
 
 <script>
+import { login } from '@/api/user'
 export default {
     name: 'loginPage',
 
     data() {
         return {
-            
+            ruleForm:{
+                 user_name:"",
+                password:""
+            },
+            rules:{
+                 user_name:[
+                    {required: true, message: '请输入用户名', trigger: 'blur' }
+                ],
+                password:[
+                    {required: true, message: '请输入密码', trigger: 'blur' }
+                ]
+            }
         };
     },
 
-    mounted() {
-        
+    mounted() {    
     },
-
     methods: {
-        login(){
-            this.$router.push({name:"guide"})
+         submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+            if (valid) {
+                this.submit();
+            } else {
+                return false;
+            }
+        });
+      },
+       async submit () {
+            try {
+                const {data} = await login(this.ruleForm);
+                this.$router.push({name:"guide"})
+            } catch (err) {
+                  this.$message({
+                    message: err,
+                    offset:400,
+                    type: 'success'
+                });
+            }
         }
     },
 };
@@ -173,27 +218,6 @@ export default {
           line-height: 44px;
           background-image: linear-gradient(365deg, #5a49ea 0%, #2fbafb 100%);
       }
-
-        input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-            color: rgba(29,125,175,0.5);
-            font-size: 16px;
-        }
-        :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-             color: rgba(29,125,175,0.5);
-             font-size: 16px;
-        }
-        ::-moz-placeholder { /* Mozilla Firefox 19+ */
-            color: rgba(29,125,175,0.5);
-            font-size: 16px;
-        }
-        input:-ms-input-placeholder { /* Internet Explorer 10-11 */
-             color: rgba(29,125,175,0.5);
-             font-size: 16px;
-        }
-        input::-ms-input-placeholder { /* Microsoft Edge */
-             color: rgba(29,125,175,0.5);
-             font-size: 16px;
-        }
         .aboutPassword{
            margin-bottom:30px;
            
